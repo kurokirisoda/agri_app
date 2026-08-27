@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}{{ crop.name }}の施肥ガイド{% endblock %}
+{% block content %}
+<h1>{{ crop.name }}の施肥ガイド</h1>
+
+{% if guides %}
+<ul class="log-list">
+  {% for g in guides %}
+  <li class="log-item">
+    {% if g.growth_stage %}<div class="log-type">{{ g.growth_stage }}</div>{% endif %}
+    <div class="log-desc">窒素: {{ g.nitrogen or "-" }} / リン酸: {{ g.phosphorus or "-" }} / カリ: {{ g.potassium or "-" }}(10aあたり)</div>
+    {% if g.note %}<div class="log-desc">{{ g.note }}</div>{% endif %}
+    {% if g.source %}<div style="font-size:0.75rem;color:#777;margin-top:4px;">出典: {{ g.source }}</div>{% endif %}
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>この作物の施肥ガイドはまだ登録されていません。</p>
+<p style="font-size:0.85rem;color:#777;">
+  <a href="https://www.maff.go.jp/j/seisan/kankyo/hozen_type/h_sehi_kizyun/" target="_blank" rel="noopener">農林水産省 都道府県施肥基準等</a>
+  を参考に、下の「施肥ガイドを管理」から追加できます。
+</p>
+{% endif %}
+
+<a class="btn btn-secondary" href="{{ url_for('fertilizer_guides') }}" style="margin-top:12px;display:inline-block;">施肥ガイドを管理</a>
+{% endblock %}

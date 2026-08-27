@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.env
+*.db
+venv/
+.venv/
+data/famic/*.csv
+data/famic/*.zip
+static/uploads/*
+!static/uploads/.gitkeep
+*.bak

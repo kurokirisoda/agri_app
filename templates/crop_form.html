@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}作物の管理{% endblock %}
+{% block content %}
+<h1>作物の管理</h1>
+
+<form method="post" class="form">
+  <label>作物名
+    <input type="text" name="name" placeholder="例: さつまいも" required>
+  </label>
+  <label>品種(任意)
+    <input type="text" name="variety" placeholder="例: べにはるか">
+  </label>
+  <label>メモ(任意)
+    <input type="text" name="note">
+  </label>
+  <label>農薬データベース上の作物名(任意)
+    <input type="text" name="pesticide_crop_name" placeholder="例: かんしょ(未入力なら作物名で検索)">
+  </label>
+  <button type="submit">登録</button>
+</form>
+
+{% if crops %}
+<h2>登録済みの作物</h2>
+<ul class="log-list">
+  {% for c in crops %}
+  <li class="log-item">
+    <div class="log-crop">{{ c.name }}{% if c.variety %}({{ c.variety }}){% endif %}</div>
+    {% if c.note %}<div class="log-desc">{{ c.note }}</div>{% endif %}
+    {% if c.pesticide_crop_name %}<div class="log-desc">農薬DB検索名: {{ c.pesticide_crop_name }}</div>{% endif %}
+    <a class="btn" href="{{ url_for('crop_timeline', crop_id=c.id) }}" style="background:#3a6ea5;margin-top:8px;display:inline-block;">タイムライン</a>
+    <form method="post" action="{{ url_for('delete_crop', crop_id=c.id) }}" onsubmit="return confirm('削除すると関連する作業記録も全て削除されます。よろしいですか？');">
+      <button type="submit" style="background:#a33;margin-top:8px;">削除</button>
+    </form>
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}

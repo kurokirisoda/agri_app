@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}すべての記録{% endblock %}
+{% block content %}
+<h1>すべての記録</h1>
+<a class="btn btn-secondary" href="{{ url_for('dashboard') }}" style="margin-bottom:16px;display:inline-block;">作物一覧に戻る</a>
+
+<form method="get" class="filter">
+  <select name="crop_id" onchange="this.form.submit()">
+    <option value="">すべての作物</option>
+    {% for c in crops %}
+    <option value="{{ c.id }}" {% if c.id == selected_crop_id %}selected{% endif %}>{{ c.name }}</option>
+    {% endfor %}
+  </select>
+</form>
+
+{% if selected_crop_id %}
+<a class="btn" href="{{ url_for('crop_timeline', crop_id=selected_crop_id) }}" style="background:#3a6ea5;margin-bottom:16px;display:inline-block;">🕒 この作物のタイムラインを見る</a>
+{% endif %}
+
+{% if logs %}
+<ul class="log-list">
+  {% for log in logs %}
+  <li class="log-item">
+    <a href="{{ url_for('log_detail', log_id=log.id) }}" style="display:block;text-decoration:none;color:inherit;">
+      <div class="log-date">{{ log.work_date.strftime('%Y/%m/%d') }}</div>
+      <div class="log-crop">{{ log.crop.name }}</div>
+      <div class="log-type">{{ log.work_type }}</div>
+      {% if log.pest_disease %}<div class="log-pest">症状: {{ log.pest_disease }}</div>{% endif %}
+      {% if log.photos %}<div style="font-size:0.8rem;color:#777;margin-top:4px;">📷 {{ log.photos|length }}枚</div>{% endif %}
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>まだ記録がありません。</p>
+{% endif %}
+{% endblock %}

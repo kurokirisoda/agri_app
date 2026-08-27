@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}{{ crop.name }}の除草アドバイス{% endblock %}
+{% block content %}
+<h1>{{ crop.name }}の除草アドバイス</h1>
+
+<ul class="log-list">
+  {% for a in advice %}
+  <li class="log-item">{{ a }}</li>
+  {% endfor %}
+</ul>
+
+<a class="btn" href="{{ url_for('pesticide_advice', crop_id=crop.id, q='雑草') }}" style="background:#8a6d3b;margin-bottom:16px;display:inline-block;">除草剤を調べる</a>
+
+{% if weed_records %}
+<h2>雑草の状態(直近の記録)</h2>
+<ul class="log-list">
+  {% for log in weed_records %}
+  <li class="log-item">
+    <div class="log-date">{{ log.work_date.strftime('%Y/%m/%d') }}</div>
+    <div class="log-type">雑草: {{ log.weed_level }}</div>
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}

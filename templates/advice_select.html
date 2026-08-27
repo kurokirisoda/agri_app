@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}農薬アドバイス{% endblock %}
+{% block content %}
+<h1>アドバイス</h1>
+
+<h2>畑ごとの天気アドバイス</h2>
+{% if fields %}
+<ul class="log-list">
+  {% for f in fields %}
+  <li class="log-item">
+    <div class="log-crop">{{ f.name }}</div>
+    <a class="btn" href="{{ url_for('weather_advice', field_id=f.id) }}" style="background:#3a6ea5;margin-top:8px;display:inline-block;">🌦 天気を見る</a>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>まだ畑が登録されていません。「畑」タブから登録してください。</p>
+{% endif %}
+
+<h2>作物ごとのアドバイス</h2>
+<p>作物を選んでください。</p>
+{% if crops %}
+<ul class="log-list">
+  {% for c in crops %}
+  <li class="log-item">
+    <div class="log-crop">{{ c.name }}</div>
+    <div style="display:flex; gap:8px; margin-top:8px;">
+      <a class="btn" href="{{ url_for('pesticide_advice', crop_id=c.id) }}">農薬</a>
+      <a class="btn" href="{{ url_for('fertilizer_advice', crop_id=c.id) }}" style="background:#8a6d3b;">施肥</a>
+      <a class="btn" href="{{ url_for('weed_advice', crop_id=c.id) }}" style="background:#5c8a3a;">除草</a>
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>まず作物を登録してください。</p>
+{% endif %}
+{% endblock %}

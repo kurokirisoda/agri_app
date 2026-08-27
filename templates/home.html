@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}作物一覧{% endblock %}
+{% block content %}
+<h1>作物一覧</h1>
+<div style="display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;">
+  <a class="btn" href="{{ url_for('new_log') }}">＋ 記録を追加</a>
+  <a class="btn btn-secondary" href="{{ url_for('crops') }}">作物の管理</a>
+  <a class="btn" href="{{ url_for('all_logs') }}" style="background:#8a6d3b;">すべての記録</a>
+</div>
+
+{% if crops %}
+<ul class="log-list">
+  {% for c in crops %}
+  <li class="log-item">
+    <div class="log-crop">{{ c.name }}{% if c.variety %}({{ c.variety }}){% endif %}</div>
+    <a class="btn" href="{{ url_for('crop_timeline', crop_id=c.id) }}" style="background:#3a6ea5;margin-top:8px;display:inline-block;">🕒 タイムラインを見る</a>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>まだ作物が登録されていません。「作物の管理」から登録してください。</p>
+{% endif %}
+{% endblock %}

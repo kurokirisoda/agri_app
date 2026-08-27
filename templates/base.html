@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}農作業記録{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  {% if session.get('logged_in') %}
+  <header class="app-header">
+    <span class="app-title">
+      <a href="{{ url_for('dashboard') }}">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Agri Q." style="height:28px;vertical-align:middle;background:#fff;border-radius:6px;padding:3px 8px;">
+      </a>
+    </span>
+    <nav>
+      <a href="{{ url_for('dashboard') }}">記録</a>
+      <a href="{{ url_for('fields') }}">畑</a>
+      <a href="{{ url_for('advice_select') }}">アドバイス</a>
+    </nav>
+  </header>
+  {% endif %}
+  <main class="container">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class="flash">
+        {% for m in messages %}<li>{{ m }}</li>{% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+  <footer style="text-align:center;padding:16px;color:#999;font-size:0.75rem;">v{{ app_version }}</footer>
+</body>
+</html>

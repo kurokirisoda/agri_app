@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}{{ field.name }}の天気アドバイス{% endblock %}
+{% block content %}
+<h1>{{ field.name }}の天気アドバイス</h1>
+
+{% if error %}
+<p class="log-pest">{{ error }}</p>
+{% else %}
+<ul class="log-list">
+  {% for a in advice %}
+  <li class="log-item">{{ a }}</li>
+  {% endfor %}
+</ul>
+
+<h2>7日間予報</h2>
+<div style="overflow-x:auto;">
+<table style="width:100%;border-collapse:collapse;font-size:0.85rem;">
+  <tr style="background:#e4efe4;">
+    <th style="padding:6px;text-align:left;">日付</th>
+    <th style="padding:6px;">最高</th>
+    <th style="padding:6px;">最低</th>
+    <th style="padding:6px;">降水量</th>
+    <th style="padding:6px;">降水確率</th>
+  </tr>
+  {% for d in forecast %}
+  <tr style="border-top:1px solid #ddd;">
+    <td style="padding:6px;">{{ d.date }}</td>
+    <td style="padding:6px;text-align:center;">{{ d.temp_max }}℃</td>
+    <td style="padding:6px;text-align:center;">{{ d.temp_min }}℃</td>
+    <td style="padding:6px;text-align:center;">{{ d.precipitation }}mm</td>
+    <td style="padding:6px;text-align:center;">{{ d.rain_prob }}%</td>
+  </tr>
+  {% endfor %}
+</table>
+</div>
+<p style="font-size:0.8rem;color:#777;margin-top:12px;">出典: Open-Meteo。簡易的な目安です。実際の管理判断はご自身の観察と合わせてご利用ください。</p>
+{% endif %}
+{% endblock %}

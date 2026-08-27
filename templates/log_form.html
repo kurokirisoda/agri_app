@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}{{ '記録の編集' if log else '記録の追加' }}{% endblock %}
+{% block content %}
+<h1>{{ '記録の編集' if log else '記録の追加' }}</h1>
+
+{% if log and log.photos %}
+<h2>登録済みの写真</h2>
+<div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-bottom:16px;">
+  {% for p in log.photos %}
+  <div>
+    <img src="{{ p.photo_url }}" style="width:100%;border-radius:6px;">
+    <form method="post" action="{{ url_for('delete_photo', photo_id=p.id) }}" onsubmit="return confirm('この写真を削除しますか？');" style="margin-top:4px;">
+      <button type="submit" style="background:#a33;font-size:0.8rem;padding:6px;">削除</button>
+    </form>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<form method="post" class="form" enctype="multipart/form-data">
+  <label>作物
+    <select name="crop_id" required>
+      {% for c in crops %}
+      <option value="{{ c.id }}" {% if log and log.crop_id == c.id %}selected{% endif %}>{{ c.name }}{% if c.variety %}({{ c.variety }}){% endif %}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>畑(任意)
+    <select name="field_id">
+      <option value="">未選択</option>
+      {% for f in fields %}
+      <option value="{{ f.id }}" {% if log and log.field_id == f.id %}selected{% endif %}>{{ f.name }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>作業日
+    <input type="date" name="work_date" value="{{ log.work_date.isoformat() if log else today }}" required>
+  </label>
+  <label>作業内容
+    <select name="work_type" required>
+      {% for t in work_types %}
+      <option value="{{ t }}" {% if log and log.work_type == t %}selected{% endif %}>{{ t }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>作業開始時刻(任意)
+    <input type="time" name="start_time" value="{{ log.start_time.strftime('%H:%M') if log and log.start_time else '' }}">
+  </label>
+  <label>作業終了時刻(任意、畑を選択した上で開始・終了を入力するとその間の最高気温・湿度を、時刻未入力なら畑のその日の最高気温・湿度を自動記録します)
+    <input type="time" name="end_time" value="{{ log.end_time.strftime('%H:%M') if log and log.end_time else '' }}">
+  </label>
+  <label>症状・害虫名(任意、防除の場合など)
+    <input type="text" name="pest_disease" value="{{ log.pest_disease or '' if log else '' }}" placeholder="例: 葉が黄色い、アブラムシ">
+  </label>
+  <label>雑草の状態(任意)
+    <select name="weed_level">
+      <option value="">未入力</option>
+      <option value="なし" {% if log and log.weed_level == "なし" %}selected{% endif %}>なし</option>
+      <option value="少ない" {% if log and log.weed_level == "少ない" %}selected{% endif %}>少ない</option>
+      <option value="普通" {% if log and log.weed_level == "普通" %}selected{% endif %}>普通</option>
+      <option value="多い" {% if log and log.weed_level == "多い" %}selected{% endif %}>多い</option>
+    </select>
+  </label>
+  <label>メモ
+    <textarea name="description" rows="4">{{ log.description or '' if log else '' }}</textarea>
+  </label>
+  {% if remaining_photo_slots > 0 %}
+  <label>写真を撮影(任意、残り{{ remaining_photo_slots }}枚まで)
+    <input type="file" name="photo_camera" accept="image/*" capture="environment">
+  </label>
+  <label>スマホ内の写真から選ぶ(任意、複数選択可)
+    <input type="file" name="photos_gallery" accept="image/*" multiple>
+  </label>
+  {% else %}
+  <p style="font-size:0.85rem;color:#777;">写真は最大4枚まで登録済みです。追加するには既存の写真を削除してください。</p>
+  {% endif %}
+  <button type="submit">{{ '更新' if log else '保存' }}</button>
+</form>
+{% endblock %}

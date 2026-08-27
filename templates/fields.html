@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}畑の管理{% endblock %}
+{% block content %}
+<h1>畑の管理</h1>
+<p>地図をタップ、またはマーカーをドラッグして畑の位置を選んでください。畑ごとの作業記録は、各作物のタイムライン画面から絞り込んで見られます。</p>
+
+<div id="map" style="height:300px;border-radius:8px;margin-bottom:16px;"></div>
+
+<form method="post" class="form">
+  <label>畑の名前
+    <input type="text" name="name" placeholder="例: 第一畑" required>
+  </label>
+  <label>緯度
+    <input type="number" step="any" name="latitude" id="latitude" value="" required>
+  </label>
+  <label>経度
+    <input type="number" step="any" name="longitude" id="longitude" value="" required>
+  </label>
+  <button type="submit">登録</button>
+</form>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  const initialLat = 35.68;
+  const initialLon = 139.76;
+  const map = L.map('map').setView([initialLat, initialLon], 5);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+  const marker = L.marker([initialLat, initialLon], {draggable: true}).addTo(map);
+
+  function updateInputs(latlng) {
+    document.getElementById('latitude').value = latlng.lat.toFixed(6);
+    document.getElementById('longitude').value = latlng.lng.toFixed(6);
+  }
+  updateInputs(marker.getLatLng());
+  marker.on('dragend', () => updateInputs(marker.getLatLng()));
+  map.on('click', (e) => {
+    marker.setLatLng(e.latlng);
+    updateInputs(e.latlng);
+  });
+</script>
+
+{% if fields %}
+<h2>登録済みの畑</h2>
+<ul class="log-list">
+  {% for f in fields %}
+  <li class="log-item">
+    <div class="log-crop">{{ f.name }}</div>
+    <div class="log-desc">緯度: {{ f.latitude }} / 経度: {{ f.longitude }}</div>
+    <form method="post" action="{{ url_for('delete_field', field_id=f.id) }}" onsubmit="return confirm('削除しますか？関連する作業記録の畑情報は空になります。');">
+      <button type="submit" style="background:#a33;margin-top:8px;">削除</button>
+    </form>
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}

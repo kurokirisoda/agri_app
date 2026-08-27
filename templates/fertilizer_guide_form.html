@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}施肥ガイドの管理{% endblock %}
+{% block content %}
+<h1>施肥ガイドの管理</h1>
+<p style="font-size:0.85rem;color:#777;">
+  <a href="https://www.maff.go.jp/j/seisan/kankyo/hozen_type/h_sehi_kizyun/" target="_blank" rel="noopener">農林水産省 都道府県施肥基準等</a>
+  などを参考に登録してください。
+</p>
+
+<form method="post" class="form">
+  <label>作物名
+    <input type="text" name="crop_name" placeholder="例: さつまいも" required>
+  </label>
+  <label>生育段階(任意)
+    <input type="text" name="growth_stage" placeholder="例: 基肥">
+  </label>
+  <label>窒素(10aあたり)
+    <input type="text" name="nitrogen" placeholder="例: 3〜6kg">
+  </label>
+  <label>リン酸(10aあたり)
+    <input type="text" name="phosphorus" placeholder="例: 4〜8kg">
+  </label>
+  <label>カリ(10aあたり)
+    <input type="text" name="potassium" placeholder="例: 8〜12kg">
+  </label>
+  <label>メモ(任意)
+    <textarea name="note" rows="3"></textarea>
+  </label>
+  <label>出典(任意)
+    <input type="text" name="source" placeholder="例: 日本いも類研究会">
+  </label>
+  <button type="submit">登録</button>
+</form>
+
+{% if guides %}
+<h2>登録済みガイド</h2>
+<ul class="log-list">
+  {% for g in guides %}
+  <li class="log-item">
+    <div class="log-crop">{{ g.crop_name }}{% if g.growth_stage %}({{ g.growth_stage }}){% endif %}</div>
+    <div class="log-desc">N: {{ g.nitrogen or "-" }} / P: {{ g.phosphorus or "-" }} / K: {{ g.potassium or "-" }}</div>
+    <form method="post" action="{{ url_for('delete_fertilizer_guide', guide_id=g.id) }}" onsubmit="return confirm('削除しますか？');">
+      <button type="submit" style="background:#a33;margin-top:8px;">削除</button>
+    </form>
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}

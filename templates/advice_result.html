@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{{ crop.name }}の農薬情報{% endblock %}
+{% block content %}
+<h1>{{ crop.name }}の農薬情報</h1>
+
+<form method="get" class="form">
+  <label>病害虫名で絞り込み(任意)
+    <input type="text" name="q" value="{{ query }}" placeholder="例: アブラムシ">
+  </label>
+  <button type="submit">検索</button>
+</form>
+
+{% if not has_data %}
+<p>農薬データがまだ登録されていません。README を参照してデータを取り込んでください。</p>
+{% elif groups %}
+<ul class="log-list">
+  {% for g in groups %}
+  <li class="log-item">
+    {% if g.category %}<div class="log-type">{{ g.category }}</div>{% endif %}
+    <div class="log-crop">{{ g.representative.pesticide_name }}{% if g.count > 1 %}(他{{ g.count - 1 }}件){% endif %}</div>
+    <div class="log-desc">適用: {{ g.target_pest }}</div>
+    {% if g.representative.usage_timing %}<div class="log-desc">使用時期: {{ g.representative.usage_timing }}</div>{% endif %}
+    {% if g.representative.dilution %}<div class="log-desc">希釈倍数: {{ g.representative.dilution }}</div>{% endif %}
+    {% if g.representative.usage_count %}<div class="log-desc">使用回数: {{ g.representative.usage_count }}</div>{% endif %}
+    {% if g.representative.application_method %}<div class="log-desc">使用方法: {{ g.representative.application_method }}</div>{% endif %}
+  </li>
+  {% endfor %}
+</ul>
+<p style="font-size:0.8rem;color:#777;">出典: 農薬登録情報提供システム(農林水産消費安全技術センター)。「他◯件」は同じ対象への登録が他にもあることを示します。最新情報・製品選びは必ず公式サイトでご確認ください。</p>
+{% else %}
+<p>該当する農薬情報が見つかりませんでした。</p>
+{% endif %}
+{% endblock %}
