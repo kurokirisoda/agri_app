@@ -28,7 +28,8 @@ def _supabase_save(file_storage, supabase_url, supabase_key, bucket):
         data=data,
         timeout=15,
     )
-    res.raise_for_status()
+    if not res.ok:
+        raise requests.HTTPError(f"Supabase upload failed ({res.status_code}): {res.text}", response=res)
     return f"{supabase_url}/storage/v1/object/public/{bucket}/{filename}"
 
 

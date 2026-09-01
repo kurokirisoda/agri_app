@@ -160,9 +160,14 @@ def new_log():
         _record_weather(log)
 
         for f in _collect_photo_files(request)[:MAX_PHOTOS]:
-            url = save_photo(
-                f, app.config.get("SUPABASE_URL"), app.config.get("SUPABASE_KEY"), app.config.get("SUPABASE_BUCKET")
-            )
+            try:
+                url = save_photo(
+                    f, app.config.get("SUPABASE_URL"), app.config.get("SUPABASE_KEY"), app.config.get("SUPABASE_BUCKET")
+                )
+            except requests.RequestException as e:
+                app.logger.error("Photo upload failed: %s", e)
+                flash("写真の保存に失敗しました。他の項目は保存されています。")
+                continue
             if url:
                 db.session.add(WorkPhoto(work_log_id=log.id, photo_url=url))
 
@@ -202,9 +207,14 @@ def edit_log(log_id):
 
         remaining = max(MAX_PHOTOS - len(log.photos), 0)
         for f in _collect_photo_files(request)[:remaining]:
-            url = save_photo(
-                f, app.config.get("SUPABASE_URL"), app.config.get("SUPABASE_KEY"), app.config.get("SUPABASE_BUCKET")
-            )
+            try:
+                url = save_photo(
+                    f, app.config.get("SUPABASE_URL"), app.config.get("SUPABASE_KEY"), app.config.get("SUPABASE_BUCKET")
+                )
+            except requests.RequestException as e:
+                app.logger.error("Photo upload failed: %s", e)
+                flash("写真の保存に失敗しました。他の項目は保存されています。")
+                continue
             if url:
                 db.session.add(WorkPhoto(work_log_id=log.id, photo_url=url))
 
