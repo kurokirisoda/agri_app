@@ -124,6 +124,25 @@ def crops():
     return render_template("crop_form.html", crops=crop_list)
 
 
+@app.route("/crops/<int:crop_id>/edit", methods=["GET", "POST"])
+@login_required
+def edit_crop(crop_id):
+    crop = Crop.query.get_or_404(crop_id)
+    if request.method == "POST":
+        name = request.form.get("name", "").strip()
+        if name:
+            crop.name = name
+            crop.variety = request.form.get("variety", "").strip() or None
+            crop.note = request.form.get("note", "").strip() or None
+            crop.pesticide_crop_name = request.form.get("pesticide_crop_name", "").strip() or None
+            db.session.commit()
+            flash(f"「{name}」を更新しました")
+            return redirect(url_for("crops"))
+        flash("作物名を入力してください")
+    crop_list = Crop.query.order_by(Crop.name).all()
+    return render_template("crop_form.html", crops=crop_list, edit_crop=crop)
+
+
 @app.route("/crops/<int:crop_id>/delete", methods=["POST"])
 @login_required
 def delete_crop(crop_id):

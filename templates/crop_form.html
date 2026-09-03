@@ -1,22 +1,23 @@
 {% extends "base.html" %}
-{% block title %}作物の管理{% endblock %}
+{% block title %}{{ '作物の編集' if edit_crop else '作物の管理' }}{% endblock %}
 {% block content %}
-<h1>作物の管理</h1>
+<h1>{{ '作物の編集' if edit_crop else '作物の管理' }}</h1>
 
-<form method="post" class="form">
+<form method="post" action="{{ url_for('edit_crop', crop_id=edit_crop.id) if edit_crop else url_for('crops') }}" class="form">
   <label>作物名
-    <input type="text" name="name" placeholder="例: さつまいも" required>
+    <input type="text" name="name" placeholder="例: さつまいも" value="{{ edit_crop.name if edit_crop else '' }}" required>
   </label>
   <label>品種(任意)
-    <input type="text" name="variety" placeholder="例: べにはるか">
+    <input type="text" name="variety" placeholder="例: べにはるか" value="{{ edit_crop.variety or '' if edit_crop else '' }}">
   </label>
   <label>メモ(任意)
-    <input type="text" name="note">
+    <input type="text" name="note" value="{{ edit_crop.note or '' if edit_crop else '' }}">
   </label>
   <label>農薬データベース上の作物名(任意)
-    <input type="text" name="pesticide_crop_name" placeholder="例: かんしょ(未入力なら作物名で検索)">
+    <input type="text" name="pesticide_crop_name" placeholder="例: かんしょ(未入力なら作物名で検索)" value="{{ edit_crop.pesticide_crop_name or '' if edit_crop else '' }}">
   </label>
-  <button type="submit">登録</button>
+  <button type="submit">{{ '更新' if edit_crop else '登録' }}</button>
+  {% if edit_crop %}<a class="btn btn-secondary" href="{{ url_for('crops') }}" style="margin-top:8px;display:inline-block;">キャンセル</a>{% endif %}
 </form>
 
 {% if crops %}
@@ -28,8 +29,9 @@
     {% if c.note %}<div class="log-desc">{{ c.note }}</div>{% endif %}
     {% if c.pesticide_crop_name %}<div class="log-desc">農薬DB検索名: {{ c.pesticide_crop_name }}</div>{% endif %}
     <a class="btn" href="{{ url_for('crop_timeline', crop_id=c.id) }}" style="background:#3a6ea5;margin-top:8px;display:inline-block;">タイムライン</a>
-    <form method="post" action="{{ url_for('delete_crop', crop_id=c.id) }}" onsubmit="return confirm('削除すると関連する作業記録も全て削除されます。よろしいですか？');">
-      <button type="submit" style="background:#a33;margin-top:8px;">削除</button>
+    <a class="btn" href="{{ url_for('edit_crop', crop_id=c.id) }}" style="background:#777;margin-top:8px;margin-left:8px;display:inline-block;">編集</a>
+    <form method="post" action="{{ url_for('delete_crop', crop_id=c.id) }}" onsubmit="return confirm('削除すると関連する作業記録も全て削除されます。よろしいですか？');" style="display:inline;">
+      <button type="submit" style="background:#a33;margin-top:8px;margin-left:8px;">削除</button>
     </form>
   </li>
   {% endfor %}

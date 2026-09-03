@@ -22,4 +22,4 @@ class Config:
     SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
     SUPABASE_BUCKET = os.environ.get("SUPABASE_BUCKET", "agri-photos")
     MAX_CONTENT_LENGTH = 40 * 1024 * 1024  # 4枚まで、1枚あたり目安10MBを想定
-    APP_VERSION = "1.0.0"
+    APP_VERSION = "1.0.1"

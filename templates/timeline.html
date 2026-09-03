@@ -31,6 +31,7 @@
         {% if log.start_time or log.temperature is not none %}<div style="font-size:0.85rem;color:#555;margin-top:2px;">{% if log.start_time %}{{ log.start_time.strftime('%H:%M') }}{% if log.end_time %} 〜 {{ log.end_time.strftime('%H:%M') }}{% endif %}{% endif %}{% if log.temperature is not none %} 最高{{ log.temperature }}℃ {{ log.humidity }}%{% endif %}</div>{% endif %}
         {% if log.pest_disease %}<div class="log-pest">症状: {{ log.pest_disease }}</div>{% endif %}
         {% if log.weed_level %}<div class="log-desc">雑草: {{ log.weed_level }}</div>{% endif %}
+        {% if log.description %}<div class="log-desc timeline-memo">{{ log.description }}</div>{% endif %}
       </div>
       {% if log.photos %}
       <div style="position:relative;flex-shrink:0;">

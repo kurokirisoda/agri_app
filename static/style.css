@@ -130,6 +130,14 @@ button, .btn {
   white-space: pre-wrap;
 }
 
+.timeline-memo {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  color: #555;
+}
+
 .flash {
   background: #fdecea;
   color: #a33;
